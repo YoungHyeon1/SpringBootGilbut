@@ -58,7 +58,13 @@ public class ArticleApiController {
         return (deleted != null) ?
                 ResponseEntity.status(HttpStatus.NO_CONTENT).build() :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-
     }
 
+    @PostMapping("/api/transction-test")
+    public ResponseEntity<List<Article>> transctionTest(@RequestBody List<ArticleForm> articleForm){
+        List<Article> createdList = articleService.creatArticles(articleForm);
+        return (createdList != null) ?
+                ResponseEntity.status(HttpStatus.OK).body(createdList):
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 }

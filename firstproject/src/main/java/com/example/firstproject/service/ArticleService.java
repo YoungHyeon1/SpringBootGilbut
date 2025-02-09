@@ -8,8 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class ArticleService {
@@ -51,5 +55,20 @@ public class ArticleService {
         }
         articleRepository.delete(article);
         return article;
+    }
+
+    @Transactional
+    public List<Article> creatArticles(List<ArticleForm> articleForm) {
+        List<Article> articles = articleForm.stream()
+                .map(article -> article.toEntity())
+                .collect(Collectors.toList());
+
+        articles.stream()
+                .forEach(article -> articleRepository.save(article));
+
+        articleRepository.findById(-1L).orElseThrow(() -> new IllegalArgumentException(
+                "결제실패"
+        ));
+        return articles;
     }
 }
